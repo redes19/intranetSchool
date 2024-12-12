@@ -1,11 +1,19 @@
-import axios from "axios";
+import axios from 'axios';
+import { IStudent } from '../models/students.model';
 
+const baseURL = process.env.REACT_APP_URL_API;
 
-const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // URL de votre backend
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
-
-export default api;
+export const getAllStudents = async (): Promise<IStudent[]> => {
+    try {
+        console.log("get all students")
+        const  response = await axios.get<IStudent[]>(`${baseURL}/students`);
+        if (!response) {
+            throw new Error('Network response was not ok');
+          }
+          const data = response.data;
+          return data;
+    } catch (error) {
+        console.error("Error in getAllStudents:", error);
+        throw error;
+    }
+}
