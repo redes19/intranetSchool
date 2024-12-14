@@ -1,32 +1,37 @@
-CREATE TABLE eleve (
+CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     email VARCHAR(200) UNIQUE NOT NULL,
-    password VARCHAR(200) NOT NULL
+    password VARCHAR(200) NOT NULL,
+    role ENUM('eleve', 'enseignant') NOT NULL, -- Spécifie le rôle de l'utilisateur
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE eleve (
+    id INT PRIMARY KEY, -- Correspond à l'ID de la table user
+    FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE enseignant (
+    id INT PRIMARY KEY, -- Correspond à l'ID de la table user
+    FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE matiere (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) UNIQUE NOT NULL,
     description TEXT,
-    heures_total INT NOT NULL -- Nombre total d'heures pour la matière
+    heures_total INT NOT NULL
 );
 
-CREATE TABLE enseignant (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    prenom VARCHAR(100) NOT NULL,
-    email VARCHAR(200) UNIQUE NOT NULL,
-    password VARCHAR(200) NOT NULL,
-    matiere_id INT NOT NULL,
-    CONSTRAINT fk_matiere FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 
-CREATE TABLE cours (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE enseignant_matiere (
+    enseignant_id INT NOT NULL,
     matiere_id INT NOT NULL,
-    CONSTRAINT fk_cours_matiere FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE
+    PRIMARY KEY (enseignant_id, matiere_id),
+    FOREIGN KEY (enseignant_id) REFERENCES enseignant(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE inscription (
@@ -34,9 +39,9 @@ CREATE TABLE inscription (
     eleve_id INT NOT NULL,
     matiere_id INT NOT NULL,
     date_inscription DATE NOT NULL DEFAULT CURRENT_DATE,
-    CONSTRAINT fk_inscription_eleve FOREIGN KEY (eleve_id) REFERENCES eleve(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_inscription_matiere FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE (eleve_id, matiere_id) -- Empêche les doublons
+    FOREIGN KEY (eleve_id) REFERENCES eleve(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (eleve_id, matiere_id)
 );
 
 CREATE TABLE note (
@@ -46,18 +51,24 @@ CREATE TABLE note (
     valeur DECIMAL(5,2) NOT NULL, 
     commentaire TEXT, 
     date_attribution DATE NOT NULL DEFAULT CURRENT_DATE,
-    CONSTRAINT fk_note_eleve FOREIGN KEY (eleve_id) REFERENCES eleve(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_note_matiere FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (eleve_id) REFERENCES eleve(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 
 CREATE TABLE messagerie (
     id INT AUTO_INCREMENT PRIMARY KEY,
     sender_id INT NOT NULL, 
-    sender_type ENUM('eleve', 'enseignant') NOT NULL, 
     receiver_id INT NOT NULL,
-    receiver_type ENUM('eleve', 'enseignant') NOT NULL, 
     message TEXT NOT NULL, 
-    date_envoi DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    sender_role ENUM('eleve', 'enseignant') NOT NULL,
+    receiver_role ENUM('eleve', 'enseignant') NOT NULL,
+    date_envoi DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE cours (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    matiere_id INT NOT NULL,
+    FOREIGN KEY (matiere_id) REFERENCES matiere(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
