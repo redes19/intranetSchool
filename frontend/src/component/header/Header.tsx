@@ -1,4 +1,5 @@
 import './header.scss';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
@@ -6,10 +7,10 @@ export default function Header() {
         <h2>Header</h2>
         <div className="button">
           <ul>
-            <button>Dashbord</button>
-            <button>Matière</button>
-            <button>Notes</button>
-            <button>Proffesseur/students</button>
+            <li><Link to='/Dashbord'>Dashbord</Link></li>
+            <li><Link to='/Matière'>Matière</Link></li>
+            <li><Link to='/Notes'>Notes</Link></li>
+            <li><Link to='/displayUser'>Proffesseur/students</Link></li>
           </ul>
         </div>
         <div className="params">
