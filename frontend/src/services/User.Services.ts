@@ -17,3 +17,33 @@ export const getAllUser = async (): Promise<IUser[]> => {
         throw error;
     }
 }
+
+export const getAllStudent = async (): Promise<IUser[]> => {
+    try {
+        console.log("get all Student");
+        const response = await axios.get<IUser[]>(`${baseURL}/user/student`);
+        if(!response){
+            throw new Error('Network response was not ok');
+        }
+        const data = response.data;
+        return data;
+    } catch (error) {
+        console.error("Error in getAllUser:", error);
+        throw error;
+    }
+}
+
+export const getALLTeacher = async (): Promise<IUser[]> => {
+    try {
+        console.log("get all teacher");
+        const response = await axios.get<IUser[]>(`${baseURL}/user/enseignant`);
+        if(!response) {
+            throw new Error('Network response was not ok');
+        }
+        const data = response.data;
+        return data;
+    } catch (error) {
+        console.error("Error in getAllUser:", error);
+        throw error;
+    }
+}
