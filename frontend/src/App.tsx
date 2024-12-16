@@ -1,7 +1,6 @@
-import Home from './pages/home/Home'
 import Header from './component/header/Header'
 import Routespages from './Routes/RoutesPages'
-import { BrowserRouter as Router } from 'react-router-dom';
+import SearchBarre from './component/searchBarre/SearchBarre';
 
 import './App.scss';
 
@@ -9,7 +8,12 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Routespages />
+      <div className="page">
+        <SearchBarre/>
+        <div className="content">
+          <Routespages />
+        </div>
+      </div>
     </div>
   );
 }
