@@ -20,6 +20,28 @@ export class UserService {
             throw error;
         }
     }
+
+    public getAllStudent = async (): Promise<User[]> => {
+        try {
+            const query = 'SELECT * FROM user WHERE role="eleve"';
+            const [rows] = await this.db.query(query) as unknown as [User[]];
+            return rows;
+        } catch (error) {
+            console.log('Error in UserService.getAllUser', error);
+            throw error;
+        }
+    }
+
+    public getAllProfesseur = async (): Promise<User[]> => {
+        try {
+            const query = 'SELECT * FROM user  WHERE role="enseignant"';
+            const [rows] = await this.db.query(query) as unknown as [User[]];
+            return rows;
+        } catch (error) {
+            console.log('Error in UserService.getAllUser', error);
+            throw error;
+        }
+    }
     
 }
 

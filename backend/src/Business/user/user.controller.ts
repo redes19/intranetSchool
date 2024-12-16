@@ -16,6 +16,23 @@ export class UserController {
         } catch (error) {
             res.status(500).json({message: "Erreur interne", error});
         }
+    }
 
+    public getAllStudent = async (req: Request, res : Response): Promise<void> => {
+        try {
+            const student = await this.UserService.getAllStudent();
+            res.status(200).json(student);
+        } catch (error) {
+            res.status(500).json({message: "Erreur interne", error});
+        }
+    }
+
+    public getAllProfesseur = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const professeur = await this.UserService.getAllProfesseur();
+            res.status(200).json(professeur);
+        } catch (error) {
+            res.status(500).json({message: "Erreur interne", error});
+        }
     }
 }
